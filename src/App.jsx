@@ -34,7 +34,8 @@ function App() {
           name="name"
           value={formData.name}
           onChange={handleChange}
-          placeholder="Enter name" 
+          placeholder="Renseignez votre nom"
+          required
         />
       </Form.Group>
 
@@ -45,6 +46,7 @@ function App() {
           name="date"
           value={formData.date}
           onChange={handleChange}
+          required
         />
       </Form.Group>
 
@@ -55,9 +57,9 @@ function App() {
           value={formData.priority}
           onChange={handleChange}
         >
-          <option value="low">Low</option>
-          <option value="medium">Medium</option>
-          <option value="high">High</option>
+          <option value="low">Basse</option>
+          <option value="medium">Moyenne</option>
+          <option value="high">Haute</option>
         </Form.Select>
       </Form.Group>
 
@@ -67,7 +69,7 @@ function App() {
           name="isChecked"
           checked={formData.isChecked}
           onChange={handleChange}
-          label="Check me out" 
+          label="Tâche accomplie"
         />
       </Form.Group>
 
