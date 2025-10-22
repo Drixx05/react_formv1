@@ -29,23 +29,8 @@ function App() {
 				const inputDate = new Date(year, month - 1, day);
 				const today = new Date();
 				today.setHours(0, 0, 0, 0);
-
-				const isValidDate =
-					!isNaN(inputDate) &&
-					inputDate.getDate() === parseInt(day) &&
-					inputDate.getMonth() === parseInt(month) - 1 &&
-					inputDate.getFullYear() === parseInt(year);
-
 				const isFutureDate = inputDate >= today;
-
-				if (!isValidDate) throw new yup.ValidationError("Date invalide");
-
-				if (!isFutureDate)
-					throw new yup.ValidationError(
-						"La date ne peut pas être dans le passé"
-					);
-
-				return true;
+				if (!isFutureDate) return false;
 			}),
 		priority: yup
 			.string()
