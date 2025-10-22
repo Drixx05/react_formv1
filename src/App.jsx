@@ -32,8 +32,19 @@ function App() {
 					date.getMonth() === parseInt(month) - 1 &&
 					date.getFullYear() === parseInt(year)
 				);
+			})
+			.test("futureDate", "La date ne peut pas être dans le passé", (value) => {
+				if (!value) return true;
+				const [day, month, year] = value.split("/");
+				const inputDate = new Date(year, month - 1, day);
+				const today = new Date();
+				today.setHours(0, 0, 0, 0); // Reset hours to compare dates only
+				return inputDate >= today;
 			}),
-		priority: yup.string().oneOf(["low", "medium", "high"], "Priorité invalide").default("low"),
+		priority: yup
+			.string()
+			.oneOf(["low", "medium", "high"], "Priorité invalide")
+			.default("low"),
 		isChecked: yup.boolean(),
 	});
 
@@ -43,7 +54,7 @@ function App() {
 		formState: { errors },
 		reset,
 	} = useForm({
-			resolver: yupResolver(schema),
+		resolver: yupResolver(schema),
 	});
 
 	const onSubmit = (data) => {
