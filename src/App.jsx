@@ -31,6 +31,7 @@ function App() {
 				today.setHours(0, 0, 0, 0);
 				const isFutureDate = inputDate >= today;
 				if (!isFutureDate) return false;
+        return true;
 			}),
 		priority: yup
 			.string()
