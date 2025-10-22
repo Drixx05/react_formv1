@@ -14,7 +14,8 @@ function App() {
 			.string()
 			.required("Le nom est requis")
 			.min(8, "Le nom doit contenir au moins 8 caractères")
-			.max(15, "Le nom ne doit pas dépasser 15 caractères"),
+			.max(15, "Le nom ne doit pas dépasser 15 caractères")
+			.default(""),
 		dueDate: yup
 			.string()
 			.required("La date est requise")
@@ -33,19 +34,23 @@ function App() {
 					date.getFullYear() === parseInt(year)
 				);
 			})
-			.test("futureDate", "La date ne peut pas être dans le passé", (value) => {
-				if (!value) return true;
-				const [day, month, year] = value.split("/");
-				const inputDate = new Date(year, month - 1, day);
-				const today = new Date();
-				today.setHours(0, 0, 0, 0); // Reset hours to compare dates only
-				return inputDate >= today;
-			}),
+			.test(
+				"futureDate",
+				"La tâche ne peut pas être dans le passé",
+				(value) => {
+					if (!value) return true;
+					const [day, month, year] = value.split("/");
+					const inputDate = new Date(year, month - 1, day);
+					const today = new Date();
+					today.setHours(0, 0, 0, 0);
+					return inputDate >= today;
+				}
+			),
 		priority: yup
 			.string()
 			.oneOf(["low", "medium", "high"], "Priorité invalide")
 			.default("low"),
-		isChecked: yup.boolean(),
+		isChecked: yup.boolean().default(false),
 	});
 
 	const {
