@@ -1,6 +1,6 @@
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from "react-hook-form";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
@@ -24,8 +24,16 @@ function App() {
 			)
 			.test("date", "La date n'est pas valide", (value) => {
 				if (!value) return true;
+				const [day, month, year] = value.split("/");
+				const date = new Date(year, month - 1, day);
+				return (
+					!isNaN(date) &&
+					date.getDate() === parseInt(day) &&
+					date.getMonth() === parseInt(month) - 1 &&
+					date.getFullYear() === parseInt(year)
+				);
 			}),
-		priority: yup.enum(["low", "medium", "high"]).default("low"),
+		priority: yup.string().oneOf(["low", "medium", "high"], "Priorité invalide").default("low"),
 		isChecked: yup.boolean(),
 	});
 
@@ -35,9 +43,7 @@ function App() {
 		formState: { errors },
 		reset,
 	} = useForm({
-		defaultValues: {
 			resolver: yupResolver(schema),
-		},
 	});
 
 	const onSubmit = (data) => {
