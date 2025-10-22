@@ -1,4 +1,6 @@
 import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
@@ -7,6 +9,26 @@ import Col from "react-bootstrap/Col";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
+	const schema = yup.object().shape({
+		name: yup
+			.string()
+			.required("Le nom est requis")
+			.min(8, "Le nom doit contenir au moins 8 caractères")
+			.max(15, "Le nom ne doit pas dépasser 15 caractères"),
+		dueDate: yup
+			.string()
+			.required("La date est requise")
+			.matches(
+				/^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/,
+				"La date doit être au format JJ/MM/AAAA"
+			)
+			.test("date", "La date n'est pas valide", (value) => {
+				if (!value) return true;
+			}),
+		priority: yup.enum(["low", "medium", "high"]).default("low"),
+		isChecked: yup.boolean(),
+	});
+
 	const {
 		register,
 		handleSubmit,
@@ -14,10 +36,7 @@ function App() {
 		reset,
 	} = useForm({
 		defaultValues: {
-			name: "",
-			dueDate: "",
-			priority: "low",
-			isChecked: false,
+			resolver: yupResolver(schema),
 		},
 	});
 
@@ -40,7 +59,11 @@ function App() {
 								placeholder="Renseigner le nom de la tâche"
 								isInvalid={!!errors.name}
 							/>
-							{errors.name && (<Form.Control.Feedback type="invalid">{errors.name.message}</Form.Control.Feedback>)}
+							{errors.name && (
+								<Form.Control.Feedback type="invalid">
+									{errors.name.message}
+								</Form.Control.Feedback>
+							)}
 						</Form.Group>
 
 						<Form.Group className="mb-3" controlId="formBasicDate">
@@ -50,7 +73,11 @@ function App() {
 								{...register("dueDate", { required: "La date est requise" })}
 								isInvalid={!!errors.dueDate}
 							/>
-              {errors.dueDate && (<Form.Control.Feedback type="invalid">{errors.dueDate.message}</Form.Control.Feedback>)}
+							{errors.dueDate && (
+								<Form.Control.Feedback type="invalid">
+									{errors.dueDate.message}
+								</Form.Control.Feedback>
+							)}
 						</Form.Group>
 
 						<Form.Group className="mb-3" controlId="formBasicPriority">
