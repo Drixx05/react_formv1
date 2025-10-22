@@ -1,83 +1,87 @@
-import { useState } from "react";
+import { useForm } from "react-hook-form";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./App.css";
 
 function App() {
-  const [formData, setFormData] = useState({
-    name: "",
-    date: "",
-    priority: "low",
-    isChecked: false,
-  });
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        reset,
+    } = useForm({
+        defaultValues: {
+            name: "",
+            dueDate: "",
+            priority: "low",
+            isChecked: false,
+        },
+    });
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: type === "checkbox" ? checked : value,
-    }));
-  };
+    const onSubmit = (data) => {
+        console.log(data);
+        reset();
+    };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(formData);
-  };
+    return (
+        <Container as="main" className="py-5">
+            <Row className="justify-content-center">
+                <Col md={6}>
+                    <h2 className="mb-4 text-center">Formulaire de tâche</h2>
+                    <Form onSubmit={handleSubmit(onSubmit)}>
+                        <Form.Group className="mb-3" controlId="formBasicName">
+                            <Form.Label>Nom</Form.Label>
+                            <Form.Control
+                                type="text"
+                                {...register("name", { required: "Le nom est requis" })}
+                                placeholder="Renseigner le nom de la tâche"
+                                isInvalid={!!errors.name}
+                            />
+                            <Form.Control.Feedback type="invalid">
+                                {errors.name?.message}
+                            </Form.Control.Feedback>
+                        </Form.Group>
 
-  return (
-    <Form onSubmit={handleSubmit}>
-      <Form.Group className="mb-3" controlId="formBasicName">
-        <Form.Label>Nom</Form.Label>
-        <Form.Control 
-          type="text" 
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          placeholder="Renseignez votre nom"
-          required
-        />
-      </Form.Group>
+                        <Form.Group className="mb-3" controlId="formBasicDate">
+                            <Form.Label>Date</Form.Label>
+                            <Form.Control
+                                type="date"
+                                {...register("dueDate", { required: "La date est requise" })}
+                                isInvalid={!!errors.dueDate}
+                            />
+                            <Form.Control.Feedback type="invalid">
+                                {errors.dueDate?.message}
+                            </Form.Control.Feedback>
+                        </Form.Group>
 
-      <Form.Group className="mb-3" controlId="formBasicDate">
-        <Form.Label>Date</Form.Label>
-        <Form.Control 
-          type="date" 
-          name="date"
-          value={formData.date}
-          onChange={handleChange}
-          required
-        />
-      </Form.Group>
+                        <Form.Group className="mb-3" controlId="formBasicPriority">
+                            <Form.Label>Priorité</Form.Label>
+                            <Form.Select {...register("priority")}>
+                                <option value="low">Basse</option>
+                                <option value="medium">Moyenne</option>
+                                <option value="high">Haute</option>
+                            </Form.Select>
+                        </Form.Group>
 
-      <Form.Group className="mb-3" controlId="formBasicPriority">
-        <Form.Label>Priorité</Form.Label>
-        <Form.Select
-          name="priority"
-          value={formData.priority}
-          onChange={handleChange}
-        >
-          <option value="low">Basse</option>
-          <option value="medium">Moyenne</option>
-          <option value="high">Haute</option>
-        </Form.Select>
-      </Form.Group>
+                        <Form.Group className="mb-3" controlId="formBasicCheckbox">
+                            <Form.Check
+                                type="checkbox"
+                                label="Tâche terminée"
+                                {...register("isChecked")}
+                            />
+                        </Form.Group>
 
-      <Form.Group className="mb-3" controlId="formBasicCheckbox">
-        <Form.Check 
-          type="checkbox" 
-          name="isChecked"
-          checked={formData.isChecked}
-          onChange={handleChange}
-          label="Tâche accomplie"
-        />
-      </Form.Group>
-
-      <Button variant="primary" type="submit">
-        Submit
-      </Button>
-    </Form>
-  );
+                        <Button variant="primary" type="submit">
+                            Envoyer
+                        </Button>
+                    </Form>
+                </Col>
+            </Row>
+        </Container>
+    );
 }
 
 export default App;
