@@ -14,8 +14,7 @@ function App() {
 			.string()
 			.required("Le nom est requis")
 			.min(8, "Le nom doit contenir au moins 8 caractères")
-			.max(15, "Le nom ne doit pas dépasser 15 caractères")
-			.default(""),
+			.max(15, "Le nom ne doit pas dépasser 15 caractères"),
 		dueDate: yup
 			.string()
 			.required("La date est requise")
@@ -23,34 +22,35 @@ function App() {
 				/^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/,
 				"La date doit être au format JJ/MM/AAAA"
 			)
-			.test("date", "La date n'est pas valide", (value) => {
+			.test("dateValidation", "La date n'est pas valide", (value) => {
 				if (!value) return true;
+
 				const [day, month, year] = value.split("/");
-				const date = new Date(year, month - 1, day);
-				return (
-					!isNaN(date) &&
-					date.getDate() === parseInt(day) &&
-					date.getMonth() === parseInt(month) - 1 &&
-					date.getFullYear() === parseInt(year)
-				);
-			})
-			.test(
-				"futureDate",
-				"La tâche ne peut pas être dans le passé",
-				(value) => {
-					if (!value) return true;
-					const [day, month, year] = value.split("/");
-					const inputDate = new Date(year, month - 1, day);
-					const today = new Date();
-					today.setHours(0, 0, 0, 0);
-					return inputDate >= today;
-				}
-			),
+				const inputDate = new Date(year, month - 1, day);
+				const today = new Date();
+				today.setHours(0, 0, 0, 0);
+
+				const isValidDate =
+					!isNaN(inputDate) &&
+					inputDate.getDate() === parseInt(day) &&
+					inputDate.getMonth() === parseInt(month) - 1 &&
+					inputDate.getFullYear() === parseInt(year);
+
+				const isFutureDate = inputDate >= today;
+
+				if (!isValidDate) throw new yup.ValidationError("Date invalide");
+
+				if (!isFutureDate)
+					throw new yup.ValidationError(
+						"La date ne peut pas être dans le passé"
+					);
+
+				return true;
+			}),
 		priority: yup
 			.string()
-			.oneOf(["low", "medium", "high"], "Priorité invalide")
-			.default("low"),
-		isChecked: yup.boolean().default(false),
+			.oneOf(["low", "medium", "high"], "Priorité invalide"),
+		isChecked: yup.boolean(),
 	});
 
 	const {
@@ -59,6 +59,12 @@ function App() {
 		formState: { errors },
 		reset,
 	} = useForm({
+		defaultValues: {
+			name: "",
+			dueDate: "",
+			priority: "low",
+			isChecked: false,
+		},
 		resolver: yupResolver(schema),
 	});
 
