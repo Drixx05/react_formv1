@@ -27,9 +27,9 @@ function App() {
     };
 
     return (
-        <Container as="main" className="py-5">
-            <Row className="justify-content-center">
-                <Col md={6}>
+        <Container as="main" className="py-5 d-flex justify-content-center">
+            <Row className="justify-content-center ">
+                <Col>
                     <h2 className="mb-4 text-center">Formulaire de tâche</h2>
                     <Form onSubmit={handleSubmit(onSubmit)}>
                         <Form.Group className="mb-3" controlId="formBasicName">
