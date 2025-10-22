@@ -40,7 +40,7 @@ function App() {
 								placeholder="Renseigner le nom de la tâche"
 								isInvalid={!!errors.name}
 							/>
-							{errors.name && (<Form.Control.Feedback type="invalid">{errors.name?.message}</Form.Control.Feedback>)}
+							{errors.name && (<Form.Control.Feedback type="invalid">{errors.name.message}</Form.Control.Feedback>)}
 						</Form.Group>
 
 						<Form.Group className="mb-3" controlId="formBasicDate">
@@ -50,7 +50,7 @@ function App() {
 								{...register("dueDate", { required: "La date est requise" })}
 								isInvalid={!!errors.dueDate}
 							/>
-              {errors.dueDate && (<Form.Control.Feedback type="invalid">{errors.dueDate?.message}</Form.Control.Feedback>)}
+              {errors.dueDate && (<Form.Control.Feedback type="invalid">{errors.dueDate.message}</Form.Control.Feedback>)}
 						</Form.Group>
 
 						<Form.Group className="mb-3" controlId="formBasicPriority">
